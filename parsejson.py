@@ -7,6 +7,7 @@ from collections import defaultdict
 import dsfail
 import nxdomain
 import dnskey
+import nsid
 
 db = defaultdict(str)
 db_counts = defaultdict(int)
@@ -41,6 +42,7 @@ def main():
 	prs.add_argument('--dsfail', help='path to dnssec-failed.org results')
 	prs.add_argument('--nxd', help='path to NXDOMAIN results')
 	prs.add_argument('--dnskey', help='path to DNSKEY results')
+	prs.add_argument('--nsid', help='path to NSID results')
 	args = prs.parse_args()
 
 	# print file header
@@ -51,6 +53,7 @@ def main():
 	if args.dsfail: process(dsfail, args.dsfail)
 	if args.nxd: process(nxdomain, args.nxd)
 	if args.dnskey: process(dnskey, args.dnskey)
+	if args.nsid: process(nsid, args.nsid)
 
 	# print the results
 	print "@data"

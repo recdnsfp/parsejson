@@ -3,11 +3,11 @@ import dnslib # sudo pip install dnslib
 
 ## called once before .each()
 def init(results):
-	print "% dnskey.py"
-	print "@attribute dnskey_rt numeric    %% response time"
-	print "@attribute dnskey_size numeric  %% response size"
-	print "@attribute dnskey_flags numeric %% header bit flags (decimal)"
-	print "@attribute dnskey_rcode numeric %% response code"
+	print "% nsid.py"
+	print "@attribute nsid_rt numeric    %% response time"
+	print "@attribute nsid_size numeric  %% response size"
+	print "@attribute nsid_flags numeric %% header bit flags (decimal)"
+	print "@attribute nsid_rcode numeric %% response code"
 
 ## called for each element in result JSON
 #   pid: probe id
