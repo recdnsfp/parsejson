@@ -3,6 +3,7 @@ import dnslib # sudo pip install dnslib
 
 ## called once before .each()
 def init(results):
+	print "% dsfail.py"
 	print "@attribute dsfail_rt numeric"
 	print "@attribute dsfail_size numeric"
 	print "@attribute dsfail_flags numeric %% header bit flags (decimal)"
@@ -11,6 +12,7 @@ def init(results):
 	print "@attribute dsfail_acount numeric %% answer count"
 	print "@attribute dsfail_nscount numeric %% authority count"
 	print "@attribute dsfail_arcount numeric %% additional count"
+	print "@attribute dsfail_rdata string %% rdata of first reply"
 
 ## called for each element in result JSON
 #   pid: probe id
@@ -20,7 +22,7 @@ def each(pid, el, res):
 	abuf = base64.b64decode(res['abuf'])
 	rr = dnslib.DNSRecord.parse(abuf)
 
-	return "%g,%d,%s,%d,%d,%d,%d,%d" % (
+	return "%g,%d,%s,%d,%d,%d,%d,%d,%s" % (
 		res['rt'],
 		res['size'],
 		rr.header.bitmap,
@@ -28,5 +30,6 @@ def each(pid, el, res):
 		rr.header.q,
 		rr.header.a,
 		rr.header.auth,
-		rr.header.ar
+		rr.header.ar,
+		(rr.a.rdata if rr.a.rdata else "N/A")
 	)

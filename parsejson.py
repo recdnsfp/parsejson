@@ -5,6 +5,7 @@ import argparse
 from collections import defaultdict
 
 import dsfail
+import nxdomain
 
 # call handler.main() for each JSON array element in given file path
 def process(db, handler, path):
@@ -28,6 +29,7 @@ def process(db, handler, path):
 def main():
 	prs = argparse.ArgumentParser(description='Parse the Atlas results')
 	prs.add_argument('--dsfail', help='path to dnssec-failed.org results')
+	prs.add_argument('--nxd', help='path to NXDOMAIN results')
 	args = prs.parse_args()
 
 	# print file header
@@ -37,6 +39,7 @@ def main():
 	# process the input files
 	db = defaultdict(str)
 	if args.dsfail: process(db, dsfail, args.dsfail)
+	if args.nxd: process(db, nxdomain, args.dsfail)
 
 	# print the results
 	print "@data"
