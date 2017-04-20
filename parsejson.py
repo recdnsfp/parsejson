@@ -36,6 +36,7 @@ def main():
 	if args.dsfail: process(db, dsfail, args.dsfail)
 
 	# print the results
+	print "@data"
 	for pid,out in db.iteritems():
 		print "%d%s" % (pid, out)
 
