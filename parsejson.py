@@ -15,12 +15,15 @@ def process(db, handler, path):
 	for el in jsobj:
 		if "prb_id" not in el: continue
 		if "result" not in el: continue
-
 		pid = el['prb_id']
 		res = el["result"]
-		out = handler.each(pid, el, res)
-		if out:
-			db[pid] += "," + out
+
+		try:
+			out = handler.each(pid, el, res)
+			if out: db[pid] += "," + out
+		except Exception, e:
+			print "%% error for probe_id %d: %s" % (pid, e)
+			continue
 
 def main():
 	prs = argparse.ArgumentParser(description='Parse the Atlas results')

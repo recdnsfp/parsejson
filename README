@@ -1,3 +1,6 @@
 This is the 2nd stage in our data processing pipeline.
 
 It accepts JSON on input, and prints CSV/ARFF on the output.
+
+Required:
+	- dnslib (sudo pip install dnslib)
