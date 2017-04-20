@@ -6,11 +6,19 @@ from collections import defaultdict
 
 import dsfail
 import nxdomain
+import dnskey
+
+db = defaultdict(str)
+db_counts = defaultdict(int)
+db_count_max = 0
 
 # call handler.main() for each JSON array element in given file path
-def process(db, handler, path):
+def process(handler, path):
+	global db_count_max
+
 	fh = open(path)
 	jsobj = json.load(fh)
+	db_count_max += 1
 
 	handler.init(jsobj)
 	for el in jsobj:
@@ -21,7 +29,9 @@ def process(db, handler, path):
 
 		try:
 			out = handler.each(pid, el, res)
-			if out: db[pid] += "," + out
+			if out:
+				db[pid] += "," + out
+				db_counts[pid] += 1
 		except Exception, e:
 			print "%% error for probe_id %d: %s" % (pid, e)
 			continue
@@ -30,6 +40,7 @@ def main():
 	prs = argparse.ArgumentParser(description='Parse the Atlas results')
 	prs.add_argument('--dsfail', help='path to dnssec-failed.org results')
 	prs.add_argument('--nxd', help='path to NXDOMAIN results')
+	prs.add_argument('--dnskey', help='path to DNSKEY results')
 	args = prs.parse_args()
 
 	# print file header
@@ -37,13 +48,16 @@ def main():
 	print "@attribute probe_id numeric"
 
 	# process the input files
-	db = defaultdict(str)
-	if args.dsfail: process(db, dsfail, args.dsfail)
-	if args.nxd: process(db, nxdomain, args.dsfail)
+	if args.dsfail: process(dsfail, args.dsfail)
+	if args.nxd: process(nxdomain, args.nxd)
+	if args.dnskey: process(dnskey, args.dnskey)
 
 	# print the results
 	print "@data"
 	for pid,out in db.iteritems():
-		print "%d%s" % (pid, out)
+		if db_counts[pid] == db_count_max:
+			print "%d%s" % (pid, out)
+#		else:
+#			print "%% %d skipped - not present in all files" % (pid)
 
 if __name__ == "__main__": main()
