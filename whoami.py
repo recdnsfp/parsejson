@@ -10,9 +10,7 @@ def init(results):
 	print "% whoami.py"
 	print "@attribute whoami_rt numeric %% response time"
 	print "@attribute whoami_ip string %% resolver ip address"
-	print "@attribute whoami_asn string %% resolver asn"
-
-	
+	print "@attribute whoami_asn numeric %% resolver asn"
 
 ## called for each element in result JSON
 #   pid: probe id
@@ -26,16 +24,16 @@ def each(pid, el, res):
 		ip = str(rr.a.rdata)
 		g_as = gi.org_by_addr(ip)
 		if g_as == None:
-			asn = "N/A"
+			asn = 0
 		else:
 			m = re.search('AS(\d+)\s+(.*)', g_as)
-			asn = m.group(1)
+			asn = int(m.group(1))
 			#as_descr = m.group(2)
 	else:
 		ip = "N/A"
-		asn = "N/A"
+		asn = 0
 
-	return "%g,%s,%s" % (
+	return "%g,%s,%d" % (
 		res['rt'],
 		ip,
 		asn

@@ -1,0 +1,87 @@
+# parse JSON with results
+./parsejson.py \
+	--dsfail ../datasets/dnssec_failed.json \
+	--nxd ../datasets/nxdomain.json \
+	--dnskey ../datasets/do_dnskey.json \
+	--nsid ../datasets/nsid.json \
+	--chaos ../datasets/chaos_bind_version.json ../datasets/hostname_bind.json \
+	--whoami ../datasets/whoami.json \
+	--ipv6 ../datasets/ipv6_only_authorative.json \
+	> ../datasets/RESULTS-ALL-FEATURES.arff
+
+# "ground truth"
+grep -f ../datasets/GOOD-PROBES.txt ../datasets/RESULTS-ALL-FEATURES.arff | sed -re 's;$;,1;g' > ../datasets/RESULTS-1600.arff
+grep -f ../datasets/BAD-PROBES.txt ../datasets/RESULTS-ALL-FEATURES.arff | sed -re 's;$;,0;g' >> ../datasets/RESULTS-1600.arff
+
+# add headers :)
+@relation 'parsejson'
+@attribute probe_id numeric
+% dsfail.py
+@attribute dsfail_rt numeric
+@attribute dsfail_size numeric
+@attribute dsfail_flags numeric %% header bit flags (decimal)
+@attribute dsfail_rcode numeric %% response code
+@attribute dsfail_qcount numeric %% query count
+@attribute dsfail_acount numeric %% answer count
+@attribute dsfail_nscount numeric %% authority count
+@attribute dsfail_arcount numeric %% additional count
+@attribute dsfail_rdata string %% rdata of first reply
+% nxdomain.py
+@attribute nxd_rt numeric %% response time
+@attribute nxd_size numeric %% response size
+@attribute nxd_rcode numeric %% response code
+% dnskey.py
+@attribute dnskey_rt numeric    %% response time
+@attribute dnskey_size numeric  %% response size
+@attribute dnskey_flags numeric %% header bit flags (decimal)
+@attribute dnskey_rcode numeric %% response code
+% nsid.py
+@attribute nsid_rt numeric    %% response time
+@attribute nsid_flags numeric %% header bit flags (decimal)
+@attribute nsid_rcode numeric %% response code
+% chaos.py
+@attribute chaos1_rt numeric % response time
+@attribute chaos1_size numeric % response size
+@attribute chaos1_rcode numeric % response code
+@attribute chaos1_version_bind numeric % request field
+@attribute chaos1_version_hostname numeric % request field
+@attribute chaos1_resp string % response string
+% chaos.py
+@attribute chaos2_rt numeric % response time
+@attribute chaos2_size numeric % response size
+@attribute chaos2_rcode numeric % response code
+@attribute chaos2_version_bind numeric % request field
+@attribute chaos2_version_hostname numeric % request field
+@attribute chaos2_resp string % response string
+% whoami.py
+@attribute whoami_rt numeric %% response time
+@attribute whoami_ip string %% resolver ip address
+@attribute whoami_asn numeric %% resolver asn
+@attribute ipv6_rt numeric %% response time
+@attribute ipv6_size numeric %% response size
+@attribute ipv6_rcode numeric %% response code
+% class
+@attribute ok {1,0}
+@data
+
+# optionally: open in weka
+
+# split into testing/training
+cat RESULTS-1600.arff | ~/arff-tools/arff-sample 50 -f > RESULTS-1600-train.arff 2> RESULTS-1600-test.arff
+
+# train the model
+./ml.py --train ../datasets/RESULTS-1600-train.arff --store ~/tmp/model2
+../datasets/RESULTS-1600-train.arff: read 4298 samples
+
+# test the model
+./ml.py --test ../datasets/RESULTS-1600-test.arff --load ~/tmp/model2
+../datasets/RESULTS-1600-test.arff: read 4347 samples
+probability for id 1123 being 1 is 0.9
+probability for id 2290 being 1 is 0.9
+probability for id 2525 being 1 is 0.7
+probability for id 3600 being 1 is 0.9
+probability for id 10248 being 1 is 0.9
+probability for id 15330 being 1 is 0.9
+probability for id 24900 being 1 is 0.7
+probability for id 28541 being 0 is 0.9
+test: ok=4347   err=0
