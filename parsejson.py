@@ -8,6 +8,7 @@ import dsfail
 import nxdomain
 import dnskey
 import nsid
+import chaos
 
 db = defaultdict(str)
 db_counts = defaultdict(int)
@@ -43,6 +44,7 @@ def main():
 	prs.add_argument('--nxd', help='path to NXDOMAIN results')
 	prs.add_argument('--dnskey', help='path to DNSKEY results')
 	prs.add_argument('--nsid', help='path to NSID results')
+	prs.add_argument('--chaos', help='path to CHAOS results')
 	args = prs.parse_args()
 
 	# print file header
@@ -54,6 +56,7 @@ def main():
 	if args.nxd: process(nxdomain, args.nxd)
 	if args.dnskey: process(dnskey, args.dnskey)
 	if args.nsid: process(nsid, args.nsid)
+	if args.chaos: process(chaos, args.chaos)
 
 	# print the results
 	print "@data"
