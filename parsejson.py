@@ -9,6 +9,7 @@ import nxdomain
 import dnskey
 import nsid
 import chaos
+import whoami
 
 db = defaultdict(str)
 db_counts = defaultdict(int)
@@ -45,6 +46,7 @@ def main():
 	prs.add_argument('--dnskey', help='path to DNSKEY results')
 	prs.add_argument('--nsid', help='path to NSID results')
 	prs.add_argument('--chaos', help='path to CHAOS results')
+	prs.add_argument('--whoami', help='path to whoami results')
 	args = prs.parse_args()
 
 	# print file header
@@ -57,6 +59,7 @@ def main():
 	if args.dnskey: process(dnskey, args.dnskey)
 	if args.nsid: process(nsid, args.nsid)
 	if args.chaos: process(chaos, args.chaos)
+	if args.whoami: process(whoami, args.whoami)
 
 	# print the results
 	print "@data"
