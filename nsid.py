@@ -5,7 +5,6 @@ import dnslib # sudo pip install dnslib
 def init(results):
 	print "% nsid.py"
 	print "@attribute nsid_rt numeric    %% response time"
-	print "@attribute nsid_size numeric  %% response size"
 	print "@attribute nsid_flags numeric %% header bit flags (decimal)"
 	print "@attribute nsid_rcode numeric %% response code"
 
@@ -17,9 +16,8 @@ def each(pid, el, res):
 	abuf = base64.b64decode(res['abuf'])
 	rr = dnslib.DNSRecord.parse(abuf)
 
-	return "%g,%d,%d,%d" % (
+	return "%g,%d,%d" % (
 		res['rt'],
-		res['size'],
 		rr.header.bitmap,
 		rr.header.rcode
 	)
