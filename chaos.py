@@ -1,15 +1,19 @@
 import base64
 import dnslib # sudo pip install dnslib
 
+chaos_counter = 0
+
 ## called once before .each()
 def init(results):
+	global chaos_counter
+	chaos_counter += 1
 	print "% chaos.py"
-	print "@attribute chaos_rt numeric %% response time"
-	print "@attribute chais_size numeric %% response size"
-	print "@attribute chaos_rcode numeric %% response code"
-	print "@attribute chaos_version_bind numeric %% request field"
-	print "@attribute chaos_version_hostname numeric %% request field"
-	print "@attribute chaos_resp string %% response string"
+	print "@attribute chaos%d_rt numeric %% response time" % chaos_counter
+	print "@attribute chaos%d_size numeric %% response size" % chaos_counter
+	print "@attribute chaos%d_rcode numeric %% response code" % chaos_counter
+	print "@attribute chaos%d_version_bind numeric %% request field" % chaos_counter
+	print "@attribute chaos%d_version_hostname numeric %% request field" % chaos_counter
+	print "@attribute chaos%d_resp string %% response string" % chaos_counter
 
 ## called for each element in result JSON
 #   pid: probe id
