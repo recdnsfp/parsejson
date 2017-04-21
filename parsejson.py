@@ -35,7 +35,8 @@ def process(handler, path):
 				db[pid] += "," + out
 				db_counts[pid] += 1
 		except Exception, e:
-			print "%% error for probe_id %d: %s" % (pid, e)
+			raise e
+			#print "%% error for probe_id %d: %s" % (pid, e)
 			continue
 
 def main():
