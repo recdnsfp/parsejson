@@ -10,6 +10,7 @@ import dnskey
 import nsid
 import chaos
 import whoami
+import ipv6
 
 db = defaultdict(str)
 db_counts = defaultdict(int)
@@ -36,8 +37,7 @@ def process(handler, path):
 				db[pid] += "," + out
 				db_counts[pid] += 1
 		except Exception, e:
-			raise e
-			#print "%% error for probe_id %d: %s" % (pid, e)
+			print "%% error for probe_id %d: %s" % (pid, e)
 			continue
 
 def main():
@@ -48,6 +48,7 @@ def main():
 	prs.add_argument('--nsid', help='path to NSID results')
 	prs.add_argument('--chaos', nargs='+', help='path to CHAOS results')
 	prs.add_argument('--whoami', help='path to whoami results')
+	prs.add_argument('--ipv6', help='path to ipv6 results')
 	args = prs.parse_args()
 
 	# print file header
@@ -62,6 +63,7 @@ def main():
 	if args.chaos: # XXX: --chaos file1 --chaos file2
 		for arg in args.chaos: process(chaos, arg)
 	if args.whoami: process(whoami, args.whoami)
+	if args.ipv6: process(ipv6, args.ipv6)
 
 	# print the results
 	print "@data"
