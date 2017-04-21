@@ -1,9 +1,9 @@
 import base64
 import dnslib # sudo pip install dnslib
-import GeoIP
+import GeoIP # sudo pip install geoip
 import re
 
-gi = GeoIP.open("/usr/local/share/GeoIP/GeoIPASNum.dat", GeoIP.GEOIP_STANDARD)
+gi = GeoIP.open("/usr/local/share/GeoIP/GeoIPASNum.dat", GeoIP.GEOIP_STANDARD) # wget http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz
 
 ## called once before .each()
 def init(results):
