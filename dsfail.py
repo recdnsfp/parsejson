@@ -8,10 +8,6 @@ def init(results):
 	print "@attribute dsfail_size numeric"
 	print "@attribute dsfail_flags numeric %% header bit flags (decimal)"
 	print "@attribute dsfail_rcode numeric %% response code"
-	print "@attribute dsfail_qcount numeric %% query count"
-	print "@attribute dsfail_acount numeric %% answer count"
-	print "@attribute dsfail_nscount numeric %% authority count"
-	print "@attribute dsfail_arcount numeric %% additional count"
 	print "@attribute dsfail_rdata string %% rdata of first reply"
 
 ## called for each element in result JSON
@@ -22,14 +18,12 @@ def each(pid, el, res):
 	abuf = base64.b64decode(res['abuf'])
 	rr = dnslib.DNSRecord.parse(abuf)
 
-	return "%g,%d,%s,%d,%d,%d,%d,%d,%s" % (
+	return "%g,%d,%d,%d,%s" % (
 		res['rt'],
 		res['size'],
 		rr.header.bitmap,
 		rr.header.rcode,
-		rr.header.q,
-		rr.header.a,
-		rr.header.auth,
-		rr.header.ar,
-		(rr.a.rdata if rr.a.rdata else "N/A")
+		(rr.a.rdata if rr.a.rdata else "?")
 	)
+
+def fail(): return "-1,-1,-1,-1,?"

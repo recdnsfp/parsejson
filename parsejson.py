@@ -2,6 +2,7 @@
 
 import json
 import argparse
+import gzip
 from collections import defaultdict
 
 import dsfail
@@ -11,6 +12,10 @@ import nsid
 import chaos
 import whoami
 import ipv6
+import ping
+import traceroute
+import qname
+import tcp
 
 db = defaultdict(str)
 db_counts = defaultdict(int)
@@ -20,17 +25,26 @@ db_count_max = 0
 def process(handler, path):
 	global db_count_max
 
-	fh = open(path)
+	if path.endswith(".gz"):
+		fh = gzip.open(path)
+	else:
+		fh = open(path)
 	jsobj = json.load(fh)
 	db_count_max += 1
 
 	handler.init(jsobj)
 	for el in jsobj:
 		if "prb_id" not in el: continue
-		if "result" not in el: continue
 		pid = el['prb_id']
-		res = el["result"]
 
+		# is error?
+		if "result" not in el:
+			if "fail" in dir(handler):
+				db[pid] += "," + handler.fail()
+				db_counts[pid] += 1
+			continue
+
+		res = el["result"]
 		try:
 			out = handler.each(pid, el, res)
 			if out:
@@ -42,6 +56,8 @@ def process(handler, path):
 
 def main():
 	prs = argparse.ArgumentParser(description='Parse the Atlas results')
+	prs.add_argument('--ping', help='path to ping results')
+	prs.add_argument('--traceroute', help='path to traceroute results')
 	prs.add_argument('--dsfail', help='path to dnssec-failed.org results')
 	prs.add_argument('--nxd', help='path to NXDOMAIN results')
 	prs.add_argument('--dnskey', help='path to DNSKEY results')
@@ -49,6 +65,8 @@ def main():
 	prs.add_argument('--chaos', nargs='+', help='path to CHAOS results')
 	prs.add_argument('--whoami', help='path to whoami results')
 	prs.add_argument('--ipv6', help='path to ipv6 results')
+	prs.add_argument('--qname', help='path to qname case results')
+	prs.add_argument('--tcp', help='path to TCP results')
 	args = prs.parse_args()
 
 	# print file header
@@ -56,6 +74,8 @@ def main():
 	print "@attribute probe_id numeric"
 
 	# process the input files
+	if args.ping: process(ping, args.ping)
+	if args.traceroute: process(traceroute, args.traceroute)
 	if args.dsfail: process(dsfail, args.dsfail)
 	if args.nxd: process(nxdomain, args.nxd)
 	if args.dnskey: process(dnskey, args.dnskey)
@@ -64,6 +84,8 @@ def main():
 		for arg in args.chaos: process(chaos, arg)
 	if args.whoami: process(whoami, args.whoami)
 	if args.ipv6: process(ipv6, args.ipv6)
+	if args.qname: process(qname, args.qname)
+	if args.tcp: process(tcp, args.tcp)
 
 	# print the results
 	print "@data"

@@ -3,14 +3,15 @@ import dnslib # sudo pip install dnslib
 import GeoIP # sudo pip install geoip
 import re
 
-gi = GeoIP.open("/usr/local/share/GeoIP/GeoIPASNum.dat", GeoIP.GEOIP_STANDARD) # wget http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz
+gi = GeoIP.open("/usr/share/GeoIP/GeoIPASNum.dat", GeoIP.GEOIP_STANDARD) # wget http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz
 
 ## called once before .each()
 def init(results):
 	print "% whoami.py"
-	print "@attribute whoami_rt numeric %% response time"
-	print "@attribute whoami_ip string %% resolver ip address"
+	print "@attribute whoami_rt numeric  %% response time"
+	print "@attribute whoami_ip string   %% resolver ip address"
 	print "@attribute whoami_asn numeric %% resolver asn"
+	print "@attribute whoami_net string  %% resolver network name"
 
 ## called for each element in result JSON
 #   pid: probe id
@@ -20,21 +21,22 @@ def each(pid, el, res):
 	abuf = base64.b64decode(res['abuf'])
 	rr = dnslib.DNSRecord.parse(abuf)
 
- 	if rr.a.rdata:
-		ip = str(rr.a.rdata)
-		g_as = gi.org_by_addr(ip)
-		if g_as == None:
-			asn = 0
-		else:
-			m = re.search('AS(\d+)\s+(.*)', g_as)
-			asn = int(m.group(1))
-			#as_descr = m.group(2)
-	else:
-		ip = "N/A"
-		asn = 0
+	if len(rr.rr) < 2 or not rr.rr[1].rdata: return fail()
+	ip = str(rr.rr[1].rdata)
 
-	return "%g,%s,%d" % (
+	asn = -1
+	name = "?"
+	g_as = gi.org_by_addr(ip)
+	if g_as:
+		d = g_as.decode("iso-8859-1").encode("utf-8").split(" ")
+		if len(d) > 0: asn  = int(d[0][2:])
+		if len(d) > 1: name = "-".join(d[1:]).replace(",", "")
+
+	return "%.1f,%s,%d,%s" % (
 		res['rt'],
 		ip,
-		asn
+		asn,
+		name
 	)
+
+def fail(): return "-1,?,-1,?"
