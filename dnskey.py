@@ -8,6 +8,10 @@ def init(results):
 	print "@attribute dnskey_size numeric  %% response size"
 	print "@attribute dnskey_flags numeric %% header bit flags (decimal)"
 	print "@attribute dnskey_rcode numeric %% response code"
+	print "@attribute dnskey_qcount numeric %% query count"
+	print "@attribute dnskey_acount numeric %% answer count"
+	print "@attribute dnskey_nscount numeric %% authority count"
+	print "@attribute dnskey_arcount numeric %% additional count"
 
 ## called for each element in result JSON
 #   pid: probe id
@@ -17,9 +21,13 @@ def each(pid, el, res):
 	abuf = base64.b64decode(res['abuf'])
 	rr = dnslib.DNSRecord.parse(abuf)
 
-	return "%g,%d,%d,%d" % (
+	return "%.1f,%d,%d,%d,%d,%d,%d,%d" % (
 		res['rt'],
 		res['size'],
 		rr.header.bitmap,
-		rr.header.rcode
+		rr.header.rcode,
+		rr.header.q,
+		rr.header.a,
+		rr.header.auth,
+		rr.header.ar
 	)

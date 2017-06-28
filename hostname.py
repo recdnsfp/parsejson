@@ -3,12 +3,12 @@ import dnslib # sudo pip install dnslib
 
 ## called once before .each()
 def init(results):
-	print "% ipv6.py"
-	print "@attribute ipv6_rt numeric    %% response time"
-	print "@attribute ipv6_size numeric  %% response size"
-	print "@attribute ipv6_flags numeric %% header bit flags (decimal)"
-	print "@attribute ipv6_rcode numeric %% response code"
-	print "@attribute ipv6_rdata string  %% rdata of first reply"
+	print "% hostname.py"
+	print "@attribute hostname_rt numeric    %% response time"
+	print "@attribute hostname_size numeric  %% response size"
+	print "@attribute hostname_flags numeric %% header bit flags (decimal)"
+	print "@attribute hostname_rcode numeric %% response code"
+	print "@attribute hostname_resp string   %% rdata of first answer"
 
 ## called for each element in result JSON
 #   pid: probe id

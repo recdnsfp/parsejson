@@ -1,7 +1,5 @@
-import GeoIP # sudo pip install geoip
+import libgeoip
 import re
-
-gi = GeoIP.open("/usr/share/GeoIP/GeoIPASNum.dat", GeoIP.GEOIP_STANDARD) # wget http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz
 
 # private ip addresses
 private_ips = (
@@ -18,7 +16,7 @@ def init(results):
 	print "@attribute tr_aslen numeric    %% number of distinct ASes on the path"
 	print "@attribute tr_exit_rtt numeric %% exit AS: max. RTT"
 	print "@attribute tr_exit_asn numeric %% exit AS: last known ASN before target"
-	print "@attribute tr_exit_net numeric %% exit AS: network name"
+	print "@attribute tr_exit_net string  %% exit AS: network name"
 
 ## called for each element in result JSON
 #   pid: probe id
@@ -70,13 +68,7 @@ def each(pid, el, res):
 		rtt, ip = hop
 		if ip == "*": continue
 
-		asn = -1
-		name = "?"
-		g_as = gi.org_by_addr(ip)
-		if g_as:
-			d = g_as.decode("iso-8859-1").encode("utf-8").split(" ")
-			if len(d) > 0: asn  = int(d[0][2:])
-			if len(d) > 1: name = "-".join(d[1:]).replace(",", "")
+		asn, name = libgeoip.lookup(ip)
 
 		# add?
 		if last_org != name:

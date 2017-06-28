@@ -1,9 +1,7 @@
 import base64
 import dnslib # sudo pip install dnslib
-import GeoIP # sudo pip install geoip
 import re
-
-gi = GeoIP.open("/usr/share/GeoIP/GeoIPASNum.dat", GeoIP.GEOIP_STANDARD) # wget http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz
+import libgeoip
 
 ## called once before .each()
 def init(results):
@@ -23,14 +21,7 @@ def each(pid, el, res):
 
 	if len(rr.rr) < 2 or not rr.rr[1].rdata: return fail()
 	ip = str(rr.rr[1].rdata)
-
-	asn = -1
-	name = "?"
-	g_as = gi.org_by_addr(ip)
-	if g_as:
-		d = g_as.decode("iso-8859-1").encode("utf-8").split(" ")
-		if len(d) > 0: asn  = int(d[0][2:])
-		if len(d) > 1: name = "-".join(d[1:]).replace(",", "")
+	asn, name = libgeoip.lookup(ip)
 
 	return "%.1f,%s,%d,%s" % (
 		res['rt'],

@@ -8,14 +8,15 @@ from collections import defaultdict
 import dsfail
 import nxdomain
 import dnskey
-import nsid
-import chaos
 import whoami
 import ipv6
 import ping
 import traceroute
 import qname
 import tcp
+import hostname
+import version
+import serverid
 
 db = defaultdict(str)
 db_counts = defaultdict(int)
@@ -58,15 +59,16 @@ def main():
 	prs = argparse.ArgumentParser(description='Parse the Atlas results')
 	prs.add_argument('--ping', help='path to ping results')
 	prs.add_argument('--traceroute', help='path to traceroute results')
-	prs.add_argument('--dsfail', help='path to dnssec-failed.org results')
-	prs.add_argument('--nxd', help='path to NXDOMAIN results')
-	prs.add_argument('--dnskey', help='path to DNSKEY results')
-	prs.add_argument('--nsid', help='path to NSID results')
-	prs.add_argument('--chaos', nargs='+', help='path to CHAOS results')
-	prs.add_argument('--whoami', help='path to whoami results')
 	prs.add_argument('--ipv6', help='path to ipv6 results')
 	prs.add_argument('--qname', help='path to qname case results')
 	prs.add_argument('--tcp', help='path to TCP results')
+	prs.add_argument('--hostname', help='path to CHAOS hostname.bind results')
+	prs.add_argument('--version', help='path to CHAOS version.bind results')
+	prs.add_argument('--serverid', help='path to CHAOS id.server results')
+	prs.add_argument('--dsfail', help='path to dnssec-failed.org results')
+	prs.add_argument('--dnskey', help='path to DNSKEY results')
+	prs.add_argument('--nxd', help='path to NXDOMAIN results')
+	prs.add_argument('--whoami', help='path to whoami results')
 	args = prs.parse_args()
 
 	# print file header
@@ -76,16 +78,16 @@ def main():
 	# process the input files
 	if args.ping: process(ping, args.ping)
 	if args.traceroute: process(traceroute, args.traceroute)
-	if args.dsfail: process(dsfail, args.dsfail)
-	if args.nxd: process(nxdomain, args.nxd)
-	if args.dnskey: process(dnskey, args.dnskey)
-	if args.nsid: process(nsid, args.nsid)
-	if args.chaos: # XXX: --chaos file1 --chaos file2
-		for arg in args.chaos: process(chaos, arg)
-	if args.whoami: process(whoami, args.whoami)
 	if args.ipv6: process(ipv6, args.ipv6)
 	if args.qname: process(qname, args.qname)
 	if args.tcp: process(tcp, args.tcp)
+	if args.hostname: process(hostname, args.hostname)
+	if args.version: process(version, args.version)
+	if args.serverid: process(serverid, args.serverid)
+	if args.dsfail: process(dsfail, args.dsfail)
+	if args.dnskey: process(dnskey, args.dnskey)
+	if args.nxd: process(nxdomain, args.nxd)
+	if args.whoami: process(whoami, args.whoami)
 
 	# print the results
 	print "@data"
