@@ -4,6 +4,7 @@ DSNAME="${1:-google}"
 
 ./parsejson.py \
 	--whoami ../measurements/datasets/$DSNAME/whoami.json.gz \
+	--whoami2 ../measurements/datasets/$DSNAME/whoami2.json.gz \
 	--ping ../measurements/datasets/$DSNAME/ping.json.gz \
 	--traceroute ../measurements/datasets/$DSNAME/traceroute.json.gz \
 	--ipv6 ../measurements/datasets/$DSNAME/v6only.json.gz \
