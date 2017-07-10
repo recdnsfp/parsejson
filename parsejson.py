@@ -3,6 +3,7 @@
 import json
 import argparse
 import gzip
+import string
 from collections import defaultdict
 
 import dsfail
@@ -37,6 +38,11 @@ def process(handler, path):
 	for el in jsobj:
 		if "prb_id" not in el: continue
 		pid = el['prb_id']
+
+		# a resultset? take first
+		if "resultset" in el:
+			ok = [x for x in el["resultset"] if "result" in x]
+			if len(ok) > 0: el = ok[0]
 
 		# is error?
 		if "result" not in el:
@@ -90,10 +96,11 @@ def main():
 	if args.whoami: process(whoami, args.whoami)
 
 	# print the results
+	printable = set(string.printable)
 	print "@data"
 	for pid,out in db.iteritems():
 		if db_counts[pid] == db_count_max:
-			print "%d%s" % (pid, out)
+			print "%d%s" % (pid, filter(lambda x: x in printable, out))
 #		else:
 #			print "%% %d skipped - not present in all files" % (pid)
 

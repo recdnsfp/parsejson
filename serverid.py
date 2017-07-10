@@ -23,7 +23,7 @@ def each(pid, el, res):
 		res['size'],
 		rr.header.bitmap,
 		rr.header.rcode,
-		(rr.a.rdata if rr.a.rdata else "?")
+		(str(rr.a.rdata).replace("\n", " ") if rr.a.rdata else "?")
 	)
 
 def fail(): return "-1,-1,-1,-1,?"

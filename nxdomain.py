@@ -24,7 +24,7 @@ def each(pid, el, res):
 	ip = str(rr.a.rdata) if rr.a.rdata else "?"
 	asn, name = libgeoip.lookup(ip)
 
-	return "%.1f,%d,%d,%d,%s,%d,%s" % (
+	return "%.1f,%d,%d,%d,\"%s\",%d,%s" % (
 		res['rt'],
 		res['size'],
 		rr.header.bitmap,
