@@ -10,6 +10,7 @@ import dsfail
 import nxdomain
 import dnskey
 import whoami
+import whoami2
 import ipv6
 import ping
 import traceroute
@@ -75,6 +76,7 @@ def main():
 	prs.add_argument('--dnskey', help='path to DNSKEY results')
 	prs.add_argument('--nxd', help='path to NXDOMAIN results')
 	prs.add_argument('--whoami', help='path to whoami results')
+	prs.add_argument('--whoami2', help='path to whoami2 results')
 	args = prs.parse_args()
 
 	# print file header
@@ -94,6 +96,7 @@ def main():
 	if args.dnskey: process(dnskey, args.dnskey)
 	if args.nxd: process(nxdomain, args.nxd)
 	if args.whoami: process(whoami, args.whoami)
+	if args.whoami2: process(whoami2, args.whoami2)
 
 	# print the results
 	printable = set(string.printable)
