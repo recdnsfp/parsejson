@@ -1,6 +1,7 @@
 import base64
 import dnslib # sudo pip install dnslib
 import libgeoip
+import common
 
 ## called once before .each()
 def init(results):
@@ -21,15 +22,15 @@ def each(pid, el, res):
 	abuf = base64.b64decode(res['abuf'])
 	rr = dnslib.DNSRecord.parse(abuf)
 
-	ip = str(rr.a.rdata) if rr.a.rdata else "?"
+	ip = str(rr.a.rdata)
 	asn, name = libgeoip.lookup(ip)
 
-	return "%.1f,%d,%d,%d,\"%s\",%d,%s" % (
+	return "%.1f,%d,%d,%d,%s,%d,%s" % (
 		res['rt'],
 		res['size'],
 		rr.header.bitmap,
 		rr.header.rcode,
-		ip,
+		common.safe(ip),
 		asn,
 		name
 	)

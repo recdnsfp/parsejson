@@ -1,5 +1,6 @@
 import base64
 import dnslib # sudo pip install dnslib
+import common
 
 ## called once before .each()
 def init(results):
@@ -23,7 +24,7 @@ def each(pid, el, res):
 		res['size'],
 		rr.header.bitmap,
 		rr.header.rcode,
-		(str(rr.a.rdata).replace("\n", " ") if rr.a.rdata else "?")
+		common.safe(rr.a.rdata)
 	)
 
 def fail(): return "-1,-1,-1,-1,?"

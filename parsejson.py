@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# parsejson.py: parse JSON data from RIPE Atlas measurements
+#
+# Copyright (C) 2017 by Maciej Andziński <m.andzinski@gmail.com>
+# Copyright (C) 2017 by Paweł Foremski <pjf@foremski.pl>
+#
+# Licensed under GNU GPL v3, <https://www.gnu.org/licenses/gpl-3.0.html>
+#
 
 import json
 import argparse

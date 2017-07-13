@@ -1,5 +1,6 @@
 import base64
 import dnslib # sudo pip install dnslib
+import common
 
 ## called once before .each()
 def init(results):
@@ -26,7 +27,7 @@ def each(pid, el, res):
 		res['rt'],
 		res['size'],
 		str(rr.a.rname) == "FaCeBoOk.cOm.",
-		(rr.a.rdata if rr.a.rdata else "?")
+		common.safe(rr.a.rdata)
 	)
 
 #def fail(): return "-1,-1,-1,?"

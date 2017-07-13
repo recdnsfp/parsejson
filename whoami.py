@@ -2,6 +2,7 @@ import base64
 import dnslib # sudo pip install dnslib
 import re
 import libgeoip
+import common
 
 ## called once before .each()
 def init(results):
@@ -25,7 +26,7 @@ def each(pid, el, res):
 
 	return "%.1f,%s,%d,%s" % (
 		res['rt'],
-		ip,
+		common.safe(ip),
 		asn,
 		name
 	)
